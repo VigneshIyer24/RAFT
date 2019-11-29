@@ -6,4 +6,6 @@
 #include "cluster.h"
 #include "comms.h"
 
-void 
+void create_cluster(int no_servers)
+{
+	MPI_Init(NULL, NULL);
