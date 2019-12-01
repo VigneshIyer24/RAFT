@@ -24,7 +24,7 @@ void server_timeout(int no_servers)
 	{
 		clock_gettime(CLOCK_MONOTONIC,&timeout[i]);
 		time_diff[i]=timeout[i].tv_nsec;
-		timeout[i].tv_nsec += ((rand() % (HIGH - LOW +1))+LOW)*1000000;
+		timeout[i].tv_nsec += ((rand() % (HIGH - LOW +5))+LOW)*1000000;
 		final_value[i]=(timeout[i].tv_nsec - time_diff[i])/NSEC2MSEC;
 		printf("Time %d = %Lf \n",i,final_value[i]);
 
