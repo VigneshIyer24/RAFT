@@ -6,7 +6,7 @@
 #include "comms.h"
 
 #define LOW 150
-#define HIGH 300
+#define HIGH 500
 
 #define NSEC2MSEC 1000000
 #define SEC2MSEC 0.001
@@ -37,7 +37,6 @@ void leader_select(int no_servers)
 	long double servers[5]; 
 	server_timeout(no_servers);
 	for(int i=0;i<no_servers;i++)
-
 	{
 		servers[i]=final_value[i];
 		printf("Timout for server %d = %Lf\n",i,servers[i]);
@@ -47,5 +46,5 @@ void leader_select(int no_servers)
 int main()
 {
 	leader_select(5);
-	
+	return 0;
 }	
