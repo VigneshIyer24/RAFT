@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdin.h>
 #include <mpi.h>
 
 void send_votes();
