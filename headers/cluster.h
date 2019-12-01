@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void create_cluster();
+void create_cluster(int a, int b);
 
 #endif /*__CLUSTER_H__*/
 
