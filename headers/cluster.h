@@ -20,6 +20,7 @@ typedef struct server_t
 
 	int thread_id; 			/* Stores the thread id  of the server 		*/
 	int data_recv[500];		/* Stores the data recived from client/leader 	*/
+	int timeout;
 	state __STATE__; 		/* Stores the state of each server  		*/
 
 }server;
@@ -35,31 +36,9 @@ typedef enum event_id_t
 	HEARTBEAT_COMMAND		/* Command to see if the leader is still alive 							*/
 
 }event_id;
+
 void create_cluster(int a, int b);
 
-state serverStatechange(server Myserver, event_id ID)/*
-{
-	switch (ID):
-	{
-
-		case REPLICATION_COMMAND:
-		/* starts corresponding  timeout timer for that particular server that is represented by the thread
-		break;
-		case VOTE_COMMAND:
-                /* VOTE sent to a follower to a canddate 
-                break;
-		case CLIENT_MESSAGE_COMMAND:
-                /* Client sends data to the leader
-                break;
-		case VOTE_REQUEST_COMMAND:
-                /* Requesting other servers for votes when an election is started
-                break;
-		case EVENT_TIMEOUT_COMMAND:
-                /* Requesting and telling the other servers and leader to start an e;ection
-                break;
-
-	}
-
-}*/
+state serverStatechange(server *Myserver, event_id ID);
 #endif /*__CLUSTER_H__*/
 
