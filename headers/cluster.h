@@ -20,7 +20,8 @@ typedef struct server_t
 
 	int thread_id; 			/* Stores the thread id  of the server 		*/
 	int data_recv[500];		/* Stores the data recived from client/leader 	*/
-	int timeout;
+	int timeout;			/* Defines the timeout time of the server	*/
+	int term_number;		/* Defines the term of the particular server	*/
 	state __STATE__; 		/* Stores the state of each server  		*/
 
 }server;
