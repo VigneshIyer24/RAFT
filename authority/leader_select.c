@@ -5,33 +5,16 @@
 #include <time.h>
 
 #include "comms.h"
-//#include "leader_select.h"
+#include "leader_select.h"
 
-
-#define LOW 150
-#define HIGH 500
-
-#define NSEC2MSEC 1000000
-#define SEC2MSEC 0.001
-#define SEC2NSEC 1000000000
-
-struct timespec timeout[5];
-pthread_mutex_t time_lock;
-long double final_value[5];
-
-void server_timeout(int no_servers)
+void server_timeout(int server_no)
 {
 	pthread_mutex_lock(&time_lock);
-	double time_diff[5];	
-	for(int i=0; i<no_servers;i++)
-	{
-		clock_gettime(CLOCK_MONOTONIC,&timeout[i]);
-		time_diff[i]=timeout[i].tv_nsec;
-		timeout[i].tv_nsec += ((rand() % (HIGH - LOW +5))+LOW)*1000000;
-		final_value[i]=(timeout[i].tv_nsec - time_diff[i])/NSEC2MSEC;
-		printf("Time %d = %Lf \n",i,final_value[i]);
-
-	}
+	double time_diff;	
+	clock_gettime(CLOCK_MONOTONIC,&timeout[i]);
+	time_diff=timeout.tv_nsec;
+	timeout.tv_nsec += ((rand() % (HIGH - LOW +5))+LOW)*1000000;
+	final_value=(timeout.tv_nsec - time_diff)/NSEC2MSEC;
 	pthread_mutex_unlock(&time_lock);
 }
 

@@ -22,9 +22,12 @@ int main(int argc, char** argv)
    	int world_rank;
   	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   	int world_size;
-  	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-    	create_cluster(world_size, world_rank);
-        MPI_Finalize();
+	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    	while(1)
+	{
+		create_cluster(world_size, world_rank);
+	}
+	MPI_Finalize();
 	return 0;
 }
 
@@ -48,11 +51,9 @@ state serverStatechange(server *Myserver, event_id ID)
 			if(check==0 && counter<499)
 			{
 				clock_gettime(CLOCK_MONOTONIC,&timer_end);
-				total_time=(timer_end.tv_sec+(timer_end.tv_nsec/1000000000));
-				printf("%f",total_time);
-				//total_time=total_time*100;
+				total_time=(timer_end.tv_sec+(timer_end.tv_nsec/1000000000))-total_time;
+				total_time=total_time*100;
 			}
-			printf("%f",total_time);
 			if(check == 0 && total_time < Myserver->timeout)
 			{
 				Myserver->data_recv[counter]=send_data;
@@ -65,12 +66,12 @@ state serverStatechange(server *Myserver, event_id ID)
 				printf("Failed");
 				return CANDIDATE;
 			}
-                break;
+                	break;
                 case VOTE_COMMAND:
                 /* VOTE sent to a follower to a candidate*/
 			MPI_Send(&vote,1,MPI_INT,Myserver->thread_id,0,MPI_COMM_WORLD);
 			return CANDIDATE;
-                break;
+                	break;
                 case CLIENT_MESSAGE_COMMAND:
                 /* Client sends data to the leader*/
 			counter = 0; 
@@ -81,27 +82,23 @@ state serverStatechange(server *Myserver, event_id ID)
 				counter++;
 			}
 			return LEADER;
-                break;
+                	break;
                 case VOTE_REQUEST_COMMAND:
                 /* Requesting other servers for votes when an election is started*/
 			
-                break;
+                	break;
 		case EVENT_TIMEOUT_COMMAND:
                 /* Requesting and telling the other servers and leader to start an election*/
-                break;
+                	break;
 		case HEARTBEAT_COMMAND:
-			printf("Hello\n");
-		/*	check=MPI_Recv(&send_data,1,MPI_INT,client0,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-			if(check!=0)
-			{
-				MPI_Bcast(&heartbeat,1,MPI_INT,0,MPI_COMM_WORLD);
-			}*/
-		//	else
-			
-			MPI_Send(&heartbeat,1,MPI_INT,1,0,MPI_COMM_WORLD);
-			
+			for(int i=1;i<5;i++)
+			{	
+				MPI_Send(&heartbeat,1,MPI_INT,i,0,MPI_COMM_WORLD);
+			}
 			return LEADER;
-		break;
+			break;
+		default:
+			break;
 
 	}	
 
@@ -129,14 +126,12 @@ void create_cluster(int world_size,int world_rank)
 	server_pool[2]->timeout = 170;
 	server_pool[3]->timeout = 200;
 	server_pool[4]->timeout = 250;
-	for(int i =0 ;i<3;i++)
-	{
 	if(world_rank==0)
 	{
 		server_pool[0]->__STATE__=LEADER;
 		server_pool[0]->__STATE__=serverStatechange(server_pool[0],HEARTBEAT_COMMAND);
 	}
-	else
+	else if(world_rank>0 && world_rank < world_size)
 	{
 		//server_pool[0]->__STATE__=LEADER;
 		server_pool[1]->__STATE__=FOLLOWER;
@@ -151,5 +146,5 @@ void create_cluster(int world_size,int world_rank)
 		printf("Done\n");
 
 	}
-	}
+
 }
